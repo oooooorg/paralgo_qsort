@@ -9,8 +9,8 @@
 #include <parlay/sequence.h>
 #include <parlay/primitives.h>
 
-void par_qsort(parlay::sequence<int>& arr);
-void seq_qsort(std::vector<int> &arr);
+void par_qsort(std::vector<int>& arr);
+void seq_qsort(std::vector<int>& arr);
 
 #endif //QUICK_SORT_H
 

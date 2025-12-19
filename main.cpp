@@ -35,14 +35,39 @@ double measure_time(Func func) {
 }
 
 int main() {
-    parlay::sequence<int> test_seq = {
+    std::vector<int> test_seq = {
         10, 5, 2, 3, 7, 10, 1, 9, 4, 8, 623523, 234, 234, 14124, 4353, 234, 4, 342, 124, 235, 12, 41, 25, 23, 5, 2, 35,
         23, 5, 1, 25, 436, 23,
     };
-    par_qsort(test_seq);
+
+    seq_qsort(test_seq);
 
     if (!std::is_sorted(test_seq.begin(), test_seq.end())) {
         std::cerr << "Seq sort not correct test #1" << std::endl;
+        return 1;
+    }
+
+    test_seq = {
+        10, 5, 2, 3, 7, 10, 1, 9, 4, 8, 623523, 234, 234, 14124, 4353, 234, 4, 342, 124, 235, 12, 41, 25, 23, 5, 2, 35,
+        23, 5, 1, 25, 436, 23,
+    };
+
+    par_qsort(test_seq);
+
+    if (!std::is_sorted(test_seq.begin(), test_seq.end())) {
+        std::cerr << "Par sort not correct test #1" << std::endl;
+        return 1;
+    }
+
+    test_seq = {
+        1, 2, 3, 4, 5, 9, 10, 8, 7, 6, 5, 4, 3, 2, 1, 7, 8, 9, 10, 4, 5, 6, 7, 8, 9, 10, 1231, 123, 124, 125, 126, 127,
+        2349, 12, 89, 123, 69, 69, 69, 69, 69, 69, 69, 69, 69, 69, 69, 69, 69, 69, 69, 69, 69, 69, 69, 69, 69, 69, 69,
+        69, 69, 69, 69, 69, 69, 69
+    };
+
+    seq_qsort(test_seq);
+    if (!std::is_sorted(test_seq.begin(), test_seq.end())) {
+        std::cerr << "Seq sort not correct test #2" << std::endl;
         return 1;
     }
 
@@ -59,29 +84,6 @@ int main() {
         return 1;
     }
 
-    std::vector<int> test_vec = {
-        10, 5, 2, 3, 7, 10, 1, 9, 4, 8, 623523, 234, 234, 14124, 4353, 234, 4, 342, 124, 235, 12, 41, 25, 23, 5, 2, 35,
-        23, 5, 1, 25, 436, 23,
-    };
-    seq_qsort(test_vec);
-    if (!std::is_sorted(test_vec.begin(), test_vec.end())) {
-        std::cerr << "Seq sort not correct test #1" << std::endl;
-        return 1;
-    }
-
-    test_vec = {
-        1, 2, 3, 4, 5, 9, 10, 8, 7, 6, 5, 4, 3, 2, 1, 7, 8, 9, 10, 4, 5, 6, 7, 8, 9, 10, 1231, 123, 124, 125, 126, 127,
-        2349, 12, 89, 123, 69, 69, 69, 69, 69, 69, 69, 69, 69, 69, 69, 69, 69, 69, 69, 69, 69, 69, 69, 69, 69, 69, 69,
-        69, 69, 69, 69, 69, 69, 69
-    };
-
-    seq_qsort(test_vec);
-
-    if (!std::is_sorted(test_seq.begin(), test_seq.end())) {
-        std::cerr << "Seq sort not correct test #2" << std::endl;
-        return 1;
-    }
-
     std::cout << "Par and seq sorts are correct\n" << std::endl;
 
     std::vector<int> master_data = generate_data(ELEMENTS);
@@ -91,9 +93,9 @@ int main() {
     double seq_total = 0;
     std::cout << "Seq sort test 100kk bench." << std::endl;
     for (int i = 0; i < 5; ++i) {
-        std::vector<int> seq_buffer = master_data;
+        std::vector<int> seq_input = master_data;
         double t = measure_time([&]() {
-            seq_qsort(seq_buffer);
+            seq_qsort(seq_input);
         });
         std::cout << "Run " << i + 1 << ": " << t << "s" << std::endl;
         seq_total += t;
@@ -107,7 +109,7 @@ int main() {
     parlay::sequence<int> par_result;
 
     for (int i = 0; i < RUNS_COUNT; ++i) {
-        parlay::sequence<int> par_input(master_data.begin(), master_data.end());
+        std::vector<int> par_input = master_data;
 
         double t = measure_time([&]() {
             par_qsort(par_input);

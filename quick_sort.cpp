@@ -33,9 +33,10 @@ void par_qsort_impl(parlay::slice<int*, int*> arr) {
     );
 }
 
-void par_qsort(parlay::sequence<int>& arr) {
+void par_qsort(std::vector<int>& arr) {
     if (arr.empty()) return;
-    par_qsort_impl(parlay::make_slice(arr));
+    auto data_ptr = arr.data();
+    par_qsort_impl(parlay::make_slice(data_ptr, data_ptr + arr.size()));
 }
 
 int partition(std::vector<int>& arr, int low, int high) {

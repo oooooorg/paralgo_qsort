@@ -1,5 +1,5 @@
 # paralgo_qsort
-Реализация параллельной версии алгоритма BFS и сравнение с последовательной версией 
+Реализация параллельной версии алгоритма Quick Sort и сравнение с последовательной версией
 
 Seq sort test 100kk bench.\
 Run 1: 19.5113s\
@@ -23,5 +23,5 @@ Speedup: 3.2610x
 `mkdir build`\
 `cd build`\
 `cmake ..`\
-`cmake --build .`
+`cmake --build .`\
 `PARLAY_NUM_THREADS=4 ./paralgo`

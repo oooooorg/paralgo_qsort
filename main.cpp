@@ -71,16 +71,26 @@ int main() {
         return 1;
     }
 
-    test_seq = {
-        1, 2, 3, 4, 5, 9, 10, 8, 7, 6, 5, 4, 3, 2, 1, 7, 8, 9, 10, 4, 5, 6, 7, 8, 9, 10, 1231, 123, 124, 125, 126, 127,
-        2349, 12, 89, 123, 69, 69, 69, 69, 69, 69, 69, 69, 69, 69, 69, 69, 69, 69, 69, 69, 69, 69, 69, 69, 69, 69, 69,
-        69, 69, 69, 69, 69, 69, 69
-    };
 
+    test_seq = generate_data(100000);
     par_qsort(test_seq);
-
     if (!std::is_sorted(test_seq.begin(), test_seq.end())) {
         std::cerr << "Par sort not correct test #2" << std::endl;
+        return 1;
+    }
+
+    test_seq = generate_data(7777777);
+    par_qsort(test_seq);
+    if (!std::is_sorted(test_seq.begin(), test_seq.end())) {
+        std::cerr << "Par sort not correct test #3" << std::endl;
+        return 1;
+    }
+
+    test_seq = generate_data(1070012);
+    std::sort(test_seq.begin(), test_seq.end());
+    par_qsort(test_seq);
+    if (!std::is_sorted(test_seq.begin(), test_seq.end())) {
+        std::cerr << "Par sort not correct test #4" << std::endl;
         return 1;
     }
 

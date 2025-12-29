@@ -8,11 +8,49 @@
 #include <algorithm>
 #include <vector>
 
-constexpr size_t BLOCK = 512;
+constexpr size_t BLOCK = 2048;
+
+int partition(int* arr, int low, int high) {
+    thread_local std::mt19937 gen(std::random_device{}());
+
+    std::uniform_int_distribution<int> dist(low, high);
+    int idx = dist(gen);
+
+    std::swap(arr[idx], arr[high]);
+
+    int pivot = arr[high];
+    int i = low - 1;
+
+    for (int j = low; j <= high - 1; j++) {
+        if (arr[j] < pivot) {
+            i++;
+            std::swap(arr[i], arr[j]);
+        }
+    }
+    std::swap(arr[i + 1], arr[high]);
+    return i + 1;
+}
+
+void seq_qsort_impl(int* arr, int low, int high) {
+    if (low < high) {
+        int pi = partition(arr, low, high);
+
+        seq_qsort_impl(arr, low, pi - 1);
+        seq_qsort_impl(arr, pi + 1, high);
+    }
+}
+
+void seq_qsort(std::vector<int>& arr) {
+    if (arr.empty()) return;
+    seq_qsort_impl(arr.data(), 0, arr.size() - 1);
+}
+
 
 void par_qsort_impl(parlay::slice<int*, int*> arr) {
     if (arr.size() < BLOCK) {
-        std::sort(arr.begin(), arr.end());
+        if (arr.size() > 0) {
+            seq_qsort_impl(arr.begin(), 0, arr.size() - 1);
+        }
         return;
     }
 
@@ -37,34 +75,4 @@ void par_qsort(std::vector<int>& arr) {
     if (arr.empty()) return;
     auto data_ptr = arr.data();
     par_qsort_impl(parlay::make_slice(data_ptr, data_ptr + arr.size()));
-}
-
-int partition(std::vector<int>& arr, int low, int high) {
-    int pivot = arr[high];
-
-    int i = low - 1;
-
-    for (int j = low; j <= high - 1; j++) {
-        if (arr[j] < pivot) {
-            i++;
-            std::swap(arr[i], arr[j]);
-        }
-    }
-
-    std::swap(arr[i + 1], arr[high]);
-    return i + 1;
-}
-
-void seq_qsort_impl(std::vector<int>& arr, int low, int high) {
-    if (low < high) {
-        int pi = partition(arr, low, high);
-
-        seq_qsort_impl(arr, low, pi - 1);
-        seq_qsort_impl(arr, pi + 1, high);
-    }
-}
-
-void seq_qsort(std::vector<int>& arr) {
-    if (arr.empty()) return;
-    seq_qsort_impl(arr, 0, arr.size() - 1);
 }
